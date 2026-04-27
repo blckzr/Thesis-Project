@@ -2,6 +2,8 @@ import streamlit as st
 import cv2
 from ultralytics import YOLO
 
+# uses streamlit and ultralytics to create a fast method to test models.
+
 def main():
     # Page Setup
     st.set_page_config(page_title="YOLO11Nano Live", layout="wide")
@@ -13,13 +15,12 @@ def main():
     model = YOLO("yolo11n.pt")
 
     frame_placeholder = st.empty()
-
-    cap = cv2.VideoCapture(0)
-
     stop_button = st.button("Stop Stream")
 
-    while cap.isOpened() and not stop_button:
-        ret, frame = cap.read()
+    capture = cv2.VideoCapture(0)
+
+    while capture.isOpened() and not stop_button:
+        ret, frame = capture.read()
         if not ret:
             st.write("Video capture failed.")
             break
@@ -32,7 +33,7 @@ def main():
 
         _ = frame_placeholder.image(annotated_frame_rgb, channels="RGB")
 
-    cap.release()
+    capture.release()
 
 if __name__ == "__main__":
     main()
