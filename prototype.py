@@ -12,7 +12,7 @@ def main():
     _ = st.sidebar.header("Model Settings")
     conf_threshold = st.sidebar.slider("Confidence", 0.0, 1.0, 0.4)
 
-    model = YOLO("yolo11n.pt")
+    yolo_model = YOLO("yolo11n.pt")
 
     frame_placeholder = st.empty()
     stop_button = st.button("Stop Stream")
@@ -25,7 +25,7 @@ def main():
             st.write("Video capture failed.")
             break
 
-        results = model.track(frame, persist=True, conf=conf_threshold)
+        results = yolo_model.track(frame, persist=True, conf=conf_threshold)
 
         annotated_frame = results[0].plot()
 
