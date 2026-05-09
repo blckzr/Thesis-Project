@@ -2,31 +2,11 @@
 
 from typing import Any, cast
 from collections.abc import Iterator
-from dataclasses import dataclass
 from json_stream.base import TransientStreamingJSONObject
-import kagglehub # type: ignore
 import json_stream # type: ignore
 
-dataset_root = kagglehub.dataset_download('elin75/localized-audio-visual-deepfake-dataset-lav-df')
+from scripts.vit.lib.entry import LAVDFEntry
 
-# ── Entry type hint ───────────────────────────────────────────────
-@dataclass
-class LAVDFEntry:
-    file: str
-    n_fakes: int
-    fake_periods: list[tuple[float, float]]
-    timestamps: list[tuple[str, float, float]]
-    duration: float
-    transcript: str
-    original: str | None
-    modify_video: bool
-    modify_audio: bool
-    split: str          # "train" | "test"
-    video_frames: int
-    audio_channels: int
-    audio_frames: int
-
-# ====== Streaming parser =========
 def stream_lavdf(metadata_path: str, split: str | None = None) -> Iterator[LAVDFEntry]: #
     """
     Streams LAV-DF metadata entries lazily.
@@ -71,7 +51,6 @@ def stream_lavdf(metadata_path: str, split: str | None = None) -> Iterator[LAVDF
                 ]
             )
 
-
             # Filter by split early to avoid loading unneeded entries
             if split is not None and materialized.split != split:
                 continue
@@ -88,14 +67,3 @@ def get_clip_label(entry: LAVDFEntry, clip_start: float, clip_end: float) -> int
         if overlap > 0:
             return 1
     return 0
-
-if __name__ == "__main__":
-    for i, entry in enumerate(stream_lavdf(dataset_root + "/LAV-DF/metadata.json", split="train")):
-        print(f"File:        {entry.file}")
-        print(f"Duration:    {entry.duration:.2f}s")
-        print(f"Fake periods:{entry.fake_periods}")
-        print(f"Transcript:  {entry.transcript[:80]}...")
-        print(f"Label (0–2s):{get_clip_label(entry, 0.0, 2.0)}")
-        print("---")
-        if i >= 4:
-            break

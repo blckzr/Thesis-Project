@@ -12,6 +12,8 @@ If you have multiple nonsensical errors after, run `source .venv/bin/activate` a
 `api.py` is where the actual development of the backend will be done, while `prototype.py` will be used for testing the models.
 Any other one-off scripts will be put under the `scripts/` folder (dataset parsing, scraping websites into a JSON, etc.)
 
-To run `api.py`, do `uv run api.py`.
+To run `api.py`, do `PYTHONPATH=. uv run api.py`.
+
+To run any `scripts/` file, do `PYTHONPATH=. uv run scripts/***`.
 
 To run `prototype.py`, do `streamlit run prototype.py`.

@@ -4,3 +4,4 @@
 yolo11n.pt
 runs/
 dataset/
+__pycache__
