@@ -1,8 +1,11 @@
 import streamlit as st
 import cv2
 from ultralytics import YOLO
+import os
 
 # uses streamlit and ultralytics to create a fast method to test models.
+
+trained_model_path = "runs/detect/deepfake_detector/weights/best.pt"
 
 def main():
     # Page Setup
@@ -12,7 +15,12 @@ def main():
     _ = st.sidebar.header("Model Settings")
     conf_threshold = st.sidebar.slider("Confidence", 0.0, 1.0, 0.4)
 
-    yolo_model = YOLO("yolo11n.pt")
+    if not os.path.isfile(trained_model_path):
+        print("==== WARNING =====")
+        print("The trained model does not exist yet. Please train it by running uv run scripts/dataset_train_yolon.py")
+        return;
+
+    yolo_model = YOLO(trained_model_path)
 
     frame_placeholder = st.empty()
     stop_button = st.button("Stop Stream")
