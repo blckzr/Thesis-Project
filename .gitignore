@@ -5,3 +5,4 @@ yolo11n.pt
 runs/
 dataset/
 __pycache__
+face_landmarker.task
