@@ -24,7 +24,7 @@ class LAVDFDataset(Dataset[Sample]):
     clip_len: int
     pos_weight: float
     transform: transforms.Compose
-    def __init__(self, metadata_path: str, dataset_root: str, split: str = "train", clip_len: int = 16):
+    def __init__(self, metadata_path: str, dataset_root: str, split: str = "train", clip_len: int = 16, limit: int | None = 50, n_mfcc: int = 128):
         self.samples = []
         self.clip_len = clip_len
         self.transform = transforms.Compose([
@@ -59,7 +59,7 @@ class LAVDFDataset(Dataset[Sample]):
 
             # ====== AUDIO =======
             print("Extracing MFCC speech features...")
-            mfcc = extract_mfcc(video_path)
+            mfcc = extract_mfcc(video_path, n_mfcc=n_mfcc)
             fps = len(frames) / entry.duration
             print("Resampling MFCC speech features...")
             mfcc_resampled = librosa.util.fix_length(mfcc, size=len(frames), axis=1)
@@ -85,8 +85,8 @@ class LAVDFDataset(Dataset[Sample]):
             print("---")
 
             # TEMPORARY!!
-            if i >= 10: 
-                print("WARN!!!! The dataset stopped at 10 videos for testing! Remove this if we're absolutely sure everything is okay!")
+            if limit is not None and i >= limit: 
+                print(f"WARN!!!! The dataset stopped at {limit} videos for testing! Remove this if we're absolutely sure everything is okay!")
                 break
 
         landmarker.close()

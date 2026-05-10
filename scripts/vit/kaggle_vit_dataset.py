@@ -24,4 +24,4 @@ metadata_path = os.path.join(dataset_root, "metadata.json")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == "__main__":
-    dataset = LAVDFDataset(metadata_path, dataset_root)
+    dataset = LAVDFDataset(metadata_path, dataset_root, limit=50)
